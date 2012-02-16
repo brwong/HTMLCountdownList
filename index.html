@@ -6,14 +6,15 @@
 				font-family:sans-serif;
 			}
 			.item {
-				margin-bottom:20px;
+				margin-bottom:3em;
 				clear:both;
 			}
 			.itemname {
 				font-size:large;
 			}
 			.itemname span {
-				font-size:small;
+				font-size:x-small;
+				font-style:italic;
 				margin-left:10px;
 			}
 			.itemdescr {
@@ -32,6 +33,9 @@
 				font-size:x-large;
 				font-weight:bold;
 				color:black;
+			}
+			.past .unit span{
+				color:red;
 			}
 			.itemdays {
 				z-index:1000;
@@ -95,7 +99,7 @@
 			// produces the function to be called each second
 			function generateUpdate(obj){
 				var target = obj.attr('targ');
-				obj.children('.itemname').html(obj.children('.itemname').html()+'<span>'+Date(target)+'</span>');
+				obj.children('.itemname').html(obj.children('.itemname').html()+'<span>'+(new Date(parseInt(target))).toString()+'</span>');
 				return (function () {
 					var vals = timeDiff(target);
 					obj.children('.itemcountdown').children('.itemsign').children('span').html(vals['sign']);
@@ -103,6 +107,12 @@
 					obj.children('.itemcountdown').children('.itemhours').children('span').html(vals['hours']);
 					obj.children('.itemcountdown').children('.itemminutes').children('span').html(vals['minutes']);
 					obj.children('.itemcountdown').children('.itemseconds').children('span').html(vals['seconds']);
+					if(vals['sign']==='-'){
+						obj.children('.itemcountdown').addClass('past');
+					}
+					else{
+						obj.children('.itemcountdown').removeClass('past');
+					}
 				});
 			}
 
