@@ -20,12 +20,6 @@
 				font-size:small;
 				font-style:italic;
 			}
-			/*
-			.itemcountdown {
-				font-size:x-large;
-				font-weight:bold;
-			}
-			*/
 			.unit {
 				margin:2px 5px;
 				width:50px;
@@ -87,17 +81,6 @@
 				//diff is now the miliseconds;
 				diff = Math.floor(diff);
 
-				/*
-				//print the result
-				string += days.toString()+":";
-				if(hours<10){string += '0';}
-				string += hours.toString()+":";
-				if(minutes<10){string += '0';}
-				string += minutes.toString()+":";
-				if(seconds<10){string += '0';}
-				string += seconds.toString();
-				*/
-
 				//produce array
 				arr['days'] = days.toString();
 				arr['hours'] = hours.toString();
@@ -105,7 +88,6 @@
 				arr['seconds'] = seconds.toString();
 				arr['sign'] = sign;
 
-				//return string;
 				return arr;
 			}
 
@@ -142,19 +124,8 @@
 		</script>
 </head>
 	<body>
-	<!--
-	<div class="item" targ="2011,8,8,21,0,0,0">
-		<div class="itemname" id="bedtime_n">bedtime</div>
-		<div class="itemdescr" id="bedtime_d"></div>
-		<div class="itemcountdown" id="bedtime_cd"></div>
-	</div>
-	<div class="item" targ="2011,8,12,22,30,0,0">
-		<div class="itemname" id="website_n">website online</div>
-		<div class="itemdescr" id="website_d">and online now!</div>
-		<div class="itemcountdown" id="website_cd"></div>
-	</div>
-	-->
-	<script>
+	<h3>Countdown</h3>
+<script>
 		var a, t;
 		$(function (){
 			$.getJSON('timer.php', {}, function (data){

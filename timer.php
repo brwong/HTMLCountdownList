@@ -16,5 +16,7 @@
 		unset($event);
 	}
 
+	asort($dates);
+
 	echo json_encode($dates);
 ?>
