@@ -1,6 +1,49 @@
 <html>
 	<head>
 		<title>Countdown</title>
+		<style type="text/css">
+			body {
+				font-family:sans-serif;
+			}
+			.item {
+				margin-bottom:20px;
+				clear:both;
+			}
+			.itemname {
+				font-size:large;
+			}
+			.itemname span {
+				font-size:small;
+				margin-left:10px;
+			}
+			.itemdescr {
+				font-size:small;
+				font-style:italic;
+			}
+			/*
+			.itemcountdown {
+				font-size:x-large;
+				font-weight:bold;
+			}
+			*/
+			.unit {
+				margin:2px 5px;
+				width:50px;
+				text-align:right;
+				float:left;
+				font-size:small;
+				color:grey;
+			}
+			.unit span {
+				font-size:x-large;
+				font-weight:bold;
+				color:black;
+			}
+			.itemdays {
+				z-index:1000;
+				width:auto;
+			}
+		</style>
 		<script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
 		<script type="text/javascript">
 			function extract_date(obj) {
@@ -8,8 +51,15 @@
 				var d = new Date(n[0],n[1],n[2],n[3],n[4],n[5],n[6]);
 				return d;
 			}
+
+			// timeDiff
+			// takes in a timestamp,
+			// compares to the current time,
+			// and produces a difference
 			function timeDiff(target) {
 				var string = "";
+				var arr = [];
+				var sign = "";
 				//get time
 				var now = new Date();
 				var val = now.getTime();
@@ -19,6 +69,7 @@
 				if(val >= target){
 					diff = val - target;
 					string += "-";
+					sign = "-";
 				}
 				else{
 					diff = target - val;
@@ -35,7 +86,8 @@
 				diff %= 1000;
 				//diff is now the miliseconds;
 				diff = Math.floor(diff);
-				
+
+				/*
 				//print the result
 				string += days.toString()+":";
 				if(hours<10){string += '0';}
@@ -44,18 +96,37 @@
 				string += minutes.toString()+":";
 				if(seconds<10){string += '0';}
 				string += seconds.toString();
-				
-				return string;
+				*/
+
+				//produce array
+				arr['days'] = days.toString();
+				arr['hours'] = hours.toString();
+				arr['minutes'] = minutes.toString();
+				arr['seconds'] = seconds.toString();
+				arr['sign'] = sign;
+
+				//return string;
+				return arr;
 			}
+
+			// generateUpdate
+			// produces the function to be called each second
 			function generateUpdate(obj){
-				//var n = obj.attr('targ').split(',');
-				//var d = new Date(n[0],n[1],n[2],n[3],n[4],n[5],n[6]);
-				var target = extract_date(obj);
-				obj.children('.itemname').html(obj.children('.itemname').html()+'<span>'+target+'</span>');
+				var target = obj.attr('targ');
+				obj.children('.itemname').html(obj.children('.itemname').html()+'<span>'+Date(target)+'</span>');
 				return (function () {
-					obj.children('.itemcountdown').html(timeDiff(target));
+					var vals = timeDiff(target);
+					obj.children('.itemcountdown').children('.itemsign').children('span').html(vals['sign']);
+					obj.children('.itemcountdown').children('.itemdays').children('span').html(vals['days']);
+					obj.children('.itemcountdown').children('.itemhours').children('span').html(vals['hours']);
+					obj.children('.itemcountdown').children('.itemminutes').children('span').html(vals['minutes']);
+					obj.children('.itemcountdown').children('.itemseconds').children('span').html(vals['seconds']);
 				});
 			}
+
+			// generatePrimary
+			// looks for all the "item" divs
+			// and generates the function to be called every second
 			function generatePrimary() {
 				var allitems = [];
 				$('div.item').each(function () {
@@ -68,35 +139,10 @@
 					}
 				});
 			}
-			$(function (){
-				setInterval(generatePrimary(), 1000);
-			});
 		</script>
-		<style type="text/css">
-			body {
-				font-family:sans-serif;
-			}
-			.item {
-				margin-bottom:20px;
-			}
-			.itemname {
-				font-size:large;
-			}
-			.itemname span {
-				font-size:small;
-				margin-left:10px;
-			}
-			.itemdescr {
-				font-size:small;
-				font-style:italic;
-			}
-			.itemcountdown {
-				font-size:x-large;
-				font-weight:bold;
-			}
-		</style>
-	</head>
+</head>
 	<body>
+	<!--
 	<div class="item" targ="2011,8,8,21,0,0,0">
 		<div class="itemname" id="bedtime_n">bedtime</div>
 		<div class="itemdescr" id="bedtime_d"></div>
@@ -107,5 +153,18 @@
 		<div class="itemdescr" id="website_d">and online now!</div>
 		<div class="itemcountdown" id="website_cd"></div>
 	</div>
+	-->
+	<script>
+		var a, t;
+		$(function (){
+			$.getJSON('timer.php', {}, function (data){
+				a = data;
+				$.each(data, function (i,d){
+					document.body.innerHTML += '<div class="item" targ="'+(d*1000)+'"><div class="itemname">'+i+'</div><div class="itemcountdown"><div class="itemsign unit"><span> </span></div><div class="itemdays unit"><span> </span><br />days</div><div class="itemhours unit"><span> </span><br />hours</div><div class="itemminutes unit"><span> </span><br />minutes</div><div class="itemseconds unit"><span> </span><br />seconds</div></div></div>';
+				});
+				t = setInterval(generatePrimary(), 1000);
+			});
+		});
+	</script>
 	</body>
 </html>
